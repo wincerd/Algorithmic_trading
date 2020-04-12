@@ -1,2 +1,2 @@
-# algorithm_trading
+# Algorithm_trading
 A Python bot which uses algorithims to trade
