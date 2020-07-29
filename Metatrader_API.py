@@ -1,8 +1,5 @@
 import zmq
 
-
-
-
 class MTraderAPI:
     def __init__(self, host=None):
         self.HOST = host or 'localhost'
@@ -106,3 +103,5 @@ class MTraderAPI:
 
         # return server reply
         return self._pull_reply()
+
+
