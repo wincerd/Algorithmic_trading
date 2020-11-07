@@ -12,40 +12,53 @@
 ##| TRADE     | ORDER_CANCEL          | Order cancel                 |
 
 
-
 import time
 from  Metatrader_API import MTraderAPI
 api = MTraderAPI()
 
-
 class trade():
     def get_position(self):
-        posit = api.construct_and_send(action="POSITIONS", symbol="Crash 500 Index")
-        acc = api.construct_and_send(action="ACCOUNT") 
-        return posit,acc
-    def open(self):
-        rep = api.construct_and_send(action="TRADE", actionType="ORDER_TYPE_BUY", symbol="Crash 500 Index", volume =10)
-        print(rep)
+        posit = api.construct_and_send(action="POSITIONS")
+        return posit
+    def open(self,volume):
+        rep = api.construct_and_send(action="TRADE", actionType="ORDER_TYPE_BUY", symbol="Crash 500 Index", volume =volume)
+        print("tick",rep)
         
-    def close(self):
-        pass
+    def close(self,symbol):
+        rep = api.construct_and_send(action="TRADE", actionType="POSITION_CLOSE_SYMBOL", symbol="Crash 500 Index")
+        print(rep)
+    def positions_in_profit(self):
+        positions = self.get_position()
+        a,p = positions
+        for i in positions[p]:
+            print(i)
     def calc_profit(self):
         acc = api.construct_and_send(action="ACCOUNT")
         balance =  acc["balance"]
-        equity =   acc[""]
-        margin = acc[""]
-        free_margin = acc[""]
-        margin_level = acc[""]
-        
-         'balance': 10112.08, 'equity': 10048.78, 'margin': 224.59, 'margin_free': 9824.19, 'margin_level': 4474.27757
-         
-    def modify(self):
-        print(self.get_position())
+        equity =   acc["equity"]
+        margin = acc["margin"]
+        free_margin = acc["margin_free"]
+        margin_level = acc["margin_level"]
+    def modify(self,volume):
+        positions = self.get_position()
+        a,p = positions
+        for i in positions[p]:
+            a = api.construct_and_send(action="TRADE", actionType="POSITION_PARTIAL", symbol="Crash 500 Index", volume = volume ,id= i["id"])
+            print(a)
     def main(self):
-##        self.open()
-        self.modify()
-
-        
+        self.open(1)
+        print(self.get_position())
+        time.sleep(10)
+        self.positions_in_profit()
+        self.modify(0.20)
+        time.sleep(15)
+        self.modify(0.20)
+        time.sleep(18)
+        self.modify(0.20)
+        time.sleep(18)
+        self.modify(0.20)
+        time.sleep(18)
+        self.close("Crash 500 Index")
 
 if __name__ == "__main__":
     new = trade()
